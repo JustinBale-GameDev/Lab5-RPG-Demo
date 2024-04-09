@@ -5,16 +5,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private InputActionAsset inputActions;
-	[SerializeField]
-	private Animator animator;
+    [SerializeField] private InputActionAsset inputActions;
+	[SerializeField] private Animator animator;
 
 	private InputAction moveAction;
-    [SerializeField] private Vector2 currentMovementInput;
-	private float movementSpeed = 5.0f;
+    private Vector2 currentMovementInput;
+	[SerializeField] private float movementSpeed = 5.0f;
 
-	[SerializeField] private float smoothTime = 0.1f; // Adjust this value to control the smoothing speed
+	[SerializeField] private float smoothTime; // Adjust this value to control the smoothing speed
 	private Vector2 velocity = Vector2.zero; // Needed for smooth damping
 
 	private void Awake()
@@ -64,16 +62,18 @@ public class PlayerController : MonoBehaviour
 			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), normalizedInput.y, ref velocity.y, smoothTime);
 
 			// Set the parameters that the Blend Tree uses to pick the correct animation
-			animator.SetFloat("MoveX", normalizedInput.x);
-			animator.SetFloat("MoveY", normalizedInput.y);
+			animator.SetFloat("MoveX", moveX);
+			animator.SetFloat("MoveY", moveY);
 		}
 		else
 		{
+			float moveX = Mathf.SmoothDamp(animator.GetFloat("MoveX"), 0, ref velocity.x, smoothTime);
+			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), 0, ref velocity.y, smoothTime);
+
 			// No movement, reset parameters to transition back to Idle
-			animator.SetFloat("MoveX", 0);
-			animator.SetFloat("MoveY", 0);
+			animator.SetFloat("MoveX", moveX);
+			animator.SetFloat("MoveY", moveY);
 		}
-		
 	}
 
 	private void OnEnable()
