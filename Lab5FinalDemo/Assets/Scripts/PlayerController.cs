@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputActionAsset inputActions;
 	[SerializeField] private Animator animator;
 
-	private InputAction moveAction;
+	private InputAction moveAction, attackAction;
     private Vector2 currentMovementInput;
 	[SerializeField] private float movementSpeed = 5.0f;
 
@@ -18,9 +18,9 @@ public class PlayerController : MonoBehaviour
 	private void Awake()
 	{
         moveAction = inputActions.FindActionMap("Gameplay").FindAction("Move");
+		attackAction = inputActions.FindActionMap("Gameplay").FindAction("Attack");
         animator = GetComponent<Animator>();
 	}
-
 
 	// Start is called before the first frame update
 	void Start()
@@ -34,11 +34,27 @@ public class PlayerController : MonoBehaviour
         // Read the move input value
         currentMovementInput = moveAction.ReadValue<Vector2>();
 
+		// Update the animator parameters for the blend tree
+		UpdateMovingAnimation();
+
+		// Attack
+		if (attackAction.WasPressedThisFrame())
+		{
+			StartCoroutine(Attacking());
+		}
+	}
+
+	private void FixedUpdate()
+	{
 		// Move the character
 		MoveCharacter(currentMovementInput);
+	}
 
-        // Update the animator parameters
-		UpdateAnimation();
+	IEnumerator Attacking()
+	{
+		animator.SetBool("isAttacking", true);
+		yield return new WaitForSeconds(1.5f);
+		animator.SetBool("isAttacking", false);
 	}
 
 	private void MoveCharacter(Vector2 direction)
@@ -50,7 +66,7 @@ public class PlayerController : MonoBehaviour
 		transform.Translate(move, Space.World);
 	}
 
-	private void UpdateAnimation()
+	private void UpdateMovingAnimation()
 	{
 		// Check if moving
 		if (currentMovementInput.magnitude > 0)
@@ -79,9 +95,11 @@ public class PlayerController : MonoBehaviour
 	private void OnEnable()
 	{
 		moveAction.Enable();
+		attackAction.Enable();
 	}
 	private void OnDisable()
 	{
 		moveAction.Disable();
+		attackAction.Disable();
 	}
 }
