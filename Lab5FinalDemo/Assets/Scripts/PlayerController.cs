@@ -39,21 +39,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-		HandleRotation();
+		currentMovementInput = moveAction.ReadValue<Vector2>();
+		currentLookInput = lookAction.ReadValue<Vector2>();
+
+		
 		UpdateMovingAnimation(); // Update the animator parameters for movement blend tree
-		HandleAttackInput();
+		//HandleAttackInput();
+
+		
 	}
 
 	private void FixedUpdate()
 	{
 		MoveCharacter();
+		HandleRotation();
 	}
 
 	private void HandleRotation()
 	{
-		currentLookInput = lookAction.ReadValue<Vector2>();
 		transform.Rotate(0, currentLookInput.x * rotationSpeed * Time.deltaTime, 0);
 	}
+
 	private void HandleAttackInput()
 	{
 		// Initiate attack
@@ -87,11 +93,11 @@ public class PlayerController : MonoBehaviour
 
 		if (currentMovementInput.sqrMagnitude > 0.01f) // Check for minimal input to avoid drifting
 		{
-			Vector3 inputDirection = new Vector3(currentMovementInput.x, 0, currentMovementInput.y);
+			Vector3 inputDirection = new(currentMovementInput.x, 0, currentMovementInput.y);
 			Vector3 movement = mainCamera.transform.TransformDirection(inputDirection);
 			movement.y = 0; // Keep movement horizontal
 
-			transform.Translate(movement * movementSpeed * Time.fixedDeltaTime, Space.World);
+			transform.Translate(movementSpeed * Time.deltaTime * movement, Space.World);
 		}
 	}
 
@@ -107,8 +113,8 @@ public class PlayerController : MonoBehaviour
 			Vector3 localDirection = transform.InverseTransformDirection(worldDirection).normalized;
 
 			// Smoothly interpolate the MoveX and MoveY values
-			float moveX = Mathf.SmoothDamp(animator.GetFloat("MoveX"), localDirection.x, ref velocity.x, smoothTime);
-			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), localDirection.z, ref velocity.y, smoothTime); // Use z for forward/backward
+			float moveX = Mathf.SmoothDamp(animator.GetFloat("MoveX"), localDirection.x, ref velocity.x, smoothTime, Mathf.Infinity, Time.deltaTime);
+			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), localDirection.z, ref velocity.y, smoothTime, Mathf.Infinity, Time.deltaTime); // Use z for forward/backward
 
 			animator.SetFloat("MoveX", moveX);
 			animator.SetFloat("MoveY", moveY);
@@ -116,8 +122,8 @@ public class PlayerController : MonoBehaviour
 		else
 		{
 			// Not moving, smoothly transition back to idle values
-			float moveX = Mathf.SmoothDamp(animator.GetFloat("MoveX"), 0, ref velocity.x, smoothTime);
-			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), 0, ref velocity.y, smoothTime);
+			float moveX = Mathf.SmoothDamp(animator.GetFloat("MoveX"), 0, ref velocity.x, smoothTime, Mathf.Infinity, Time.deltaTime);
+			float moveY = Mathf.SmoothDamp(animator.GetFloat("MoveY"), 0, ref velocity.y, smoothTime, Mathf.Infinity, Time.deltaTime);
 
 			animator.SetFloat("MoveX", moveX);
 			animator.SetFloat("MoveY", moveY);
@@ -133,8 +139,8 @@ public class PlayerController : MonoBehaviour
 	private void OnDisable()
 	{
 		// When the game is paused or the player leaves the window, unlock the cursor and make it visible
-		Cursor.lockState = CursorLockMode.None;
-		Cursor.visible = true;
+		//Cursor.lockState = CursorLockMode.None;
+		//Cursor.visible = true;
 
 		moveAction.Disable();
 		attackAction.Disable();

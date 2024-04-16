@@ -1,20 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
-	[SerializeField] 
+	[SerializeField]
 	private InputActionAsset inputActions;
-    private InputAction pauseAction;
+	private InputAction pauseAction;
 
 	[SerializeField]
-	PlayerController playerController;
+	PlayerMovement playerMovement;
 
 	[SerializeField]
 	GameObject pauseMenu;
+
+	[SerializeField] AudioMixer audioMixer;
 
 	bool isPaused = false;
 
@@ -24,33 +28,36 @@ public class PauseMenu : MonoBehaviour
 	}
 
 	void Start()
-    {
+	{
 		isPaused = false;
+
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
+	// Update is called once per frame
+	void Update()
+	{
 		if (pauseAction.WasPressedThisFrame())
 		{
-			
+
 			isPaused = !isPaused;
 			if (isPaused)
 			{
 				Debug.Log("Paused");
 				Time.timeScale = 0;
-				playerController.enabled = false;
+				playerMovement.enabled = false;
 
-				//Cursor.lockState = CursorLockMode.None;
+				Cursor.lockState = CursorLockMode.None;
 				Cursor.visible = true;
 			}
 			else
 			{
 				Debug.Log("Un-Paused");
 				Time.timeScale = 1;
-				playerController.enabled = true;
+				playerMovement.enabled = true;
 
-				//Cursor.lockState = CursorLockMode.Locked;
+				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = false;
 			}
 		}
@@ -63,18 +70,33 @@ public class PauseMenu : MonoBehaviour
 		if (isPaused)
 		{
 			Time.timeScale = 0;
-			playerController.enabled = false;
+			playerMovement.enabled = false;
 		}
 		else
 		{
 			Time.timeScale = 1;
-			playerController.enabled = true;
+			playerMovement.enabled = true;
+
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
 		}
 	}
 
 	public void Quit_Button()
 	{
+#if UNITY_EDITOR
+		EditorApplication.ExitPlaymode();
+#endif
 		Application.Quit();
+	}
+
+	public void MusicVolumeUpdate(float volume)
+	{
+		audioMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+	}
+	public void SFXVolumeUpdate(float volume)
+	{
+		audioMixer.SetFloat("SFXVolume", Mathf.Log10(volume) * 20);
 	}
 
 	private void OnEnable()
