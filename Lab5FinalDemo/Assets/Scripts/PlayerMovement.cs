@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,20 +8,25 @@ public class PlayerMovement : MonoBehaviour
 {
 	[Header("Movement")]
 	public float moveSpeed;
-	[SerializeField] Vector2 currentMovementInput;
+	Vector2 currentMovementInput;
 	Vector3 moveDirection;
 
 	[Header("Input Actions")]
 	public InputActionAsset inputActions;
-	private InputAction moveAction;
+	private InputAction moveAction, attackAction;
 
 	public Transform orientation;
 	private Animator animator;
 	Rigidbody rb;
 
+	private bool isAttackInitiated = false;
+	public float attackDuration;
+	private float attackStartTime;
+
 	private void Awake()
 	{
 		moveAction = inputActions.FindActionMap("Gameplay").FindAction("Move");
+		attackAction = inputActions.FindActionMap("Gameplay").FindAction("Attack");
 	}
 
 	private void Start()
@@ -35,9 +41,11 @@ public class PlayerMovement : MonoBehaviour
 	{
 		currentMovementInput = moveAction.ReadValue<Vector2>();
 		SpeedControl();
-		//UpdateMovement();
 		bool isIdle = IsIdle();
+
 		animator.SetBool("isMoving", !isIdle);
+
+		HandleAttackInput();
 	}
 
 	private void FixedUpdate()
@@ -67,13 +75,33 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	private void HandleAttackInput()
+	{
+		// Initiate attack
+		if (attackAction.WasPressedThisFrame() && !isAttackInitiated)
+		{
+			isAttackInitiated = true;
+			animator.SetBool("isAttacking", true);
+			attackStartTime = Time.time;
+		}
+
+		// Check if the attack animation duration has passed
+		if (isAttackInitiated && Time.time > attackStartTime + attackDuration)
+		{
+			isAttackInitiated = false;
+			animator.SetBool("isAttacking", false);
+		}
+	}
+
 	private void OnEnable()
 	{
 		moveAction.Enable();
+		attackAction.Enable();
 	}
 
 	private void OnDisable()
 	{
 		moveAction.Disable();
+		attackAction.Disable();
 	}
 }

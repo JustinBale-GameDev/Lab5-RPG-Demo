@@ -44,7 +44,6 @@ public class PauseMenu : MonoBehaviour
 			isPaused = !isPaused;
 			if (isPaused)
 			{
-				Debug.Log("Paused");
 				Time.timeScale = 0;
 				playerMovement.enabled = false;
 
@@ -53,7 +52,6 @@ public class PauseMenu : MonoBehaviour
 			}
 			else
 			{
-				Debug.Log("Un-Paused");
 				Time.timeScale = 1;
 				playerMovement.enabled = true;
 
