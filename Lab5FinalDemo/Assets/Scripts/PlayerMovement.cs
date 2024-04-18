@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
 	[Header("Movement")]
 	public float moveSpeed;
-	Vector2 currentMovementInput;
+	[SerializeField] Vector2 currentMovementInput;
 	Vector3 moveDirection;
 
 	[Header("Input Actions")]
@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
 	private InputAction moveAction;
 
 	public Transform orientation;
+	private Animator animator;
 	Rigidbody rb;
 
 	private void Awake()
@@ -26,12 +27,17 @@ public class PlayerMovement : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody>();
 		rb.freezeRotation = true;
+
+		animator = GetComponent<Animator>();
 	}
 
 	private void Update()
 	{
 		currentMovementInput = moveAction.ReadValue<Vector2>();
 		SpeedControl();
+		//UpdateMovement();
+		bool isIdle = IsIdle();
+		animator.SetBool("isMoving", !isIdle);
 	}
 
 	private void FixedUpdate()
@@ -44,6 +50,11 @@ public class PlayerMovement : MonoBehaviour
 		// Calculate movement direction using the orientation
 		moveDirection = orientation.forward * currentMovementInput.y + orientation.right * currentMovementInput.x;
 		rb.AddForce(10f * moveSpeed * moveDirection.normalized, ForceMode.Force);
+	}
+
+	public bool IsIdle()
+	{
+		return currentMovementInput.sqrMagnitude < 0.01;
 	}
 
 	private void SpeedControl()
