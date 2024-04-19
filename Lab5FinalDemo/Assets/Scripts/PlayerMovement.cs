@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
+	[Header("UI Elements")]
+	public Image attack1CooldownOverlay;
+	public Image attack2CooldownOverlay;
+
 	[Header("Movement")]
 	public float moveSpeed;
 	Vector2 currentMovementInput;
@@ -13,20 +18,24 @@ public class PlayerMovement : MonoBehaviour
 
 	[Header("Input Actions")]
 	public InputActionAsset inputActions;
-	private InputAction moveAction, attackAction;
+	private InputAction moveAction, attackAction1, attackAction2;
 
 	public Transform orientation;
 	private Animator animator;
 	Rigidbody rb;
 
 	private bool isAttackInitiated = false;
+	private bool isAttack2OnCooldown = false;
 	public float attackDuration;
 	private float attackStartTime;
+
+	public int playerLevel = 1;
 
 	private void Awake()
 	{
 		moveAction = inputActions.FindActionMap("Gameplay").FindAction("Move");
-		attackAction = inputActions.FindActionMap("Gameplay").FindAction("Attack");
+		attackAction1 = inputActions.FindActionMap("Gameplay").FindAction("Attack1");
+		attackAction2 = inputActions.FindActionMap("Gameplay").FindAction("Attack2");
 	}
 
 	private void Start()
@@ -77,33 +86,105 @@ public class PlayerMovement : MonoBehaviour
 
 	private void HandleAttackInput()
 	{
-		// Initiate attack
-		if (attackAction.WasPressedThisFrame() && !isAttackInitiated)
+		if (!isAttackInitiated)
 		{
-			moveAction.Disable();
-			isAttackInitiated = true;
-			animator.SetBool("isAttacking", true);
-			attackStartTime = Time.time;
+			if (attackAction1.WasPressedThisFrame())
+			{
+				InitiateAttack("isAttacking1");
+			}
+			else if (playerLevel >= 2 && attackAction2.WasPressedThisFrame() && !isAttack2OnCooldown)
+			{
+				InitiateAttack("isAttacking2");
+				StartCoroutine(Attack2Cooldown(5f)); // Start cooldown coroutine for attack 2
+			}
 		}
 
-		// Check if the attack animation duration has passed
 		if (isAttackInitiated && Time.time > attackStartTime + attackDuration)
 		{
-			isAttackInitiated = false;
-			animator.SetBool("isAttacking", false);
-			moveAction.Enable();
+			EndAttack();
 		}
+	}
+
+	private void InitiateAttack(string attackBool)
+	{
+		moveAction.Disable();
+		isAttackInitiated = true;
+		animator.SetBool(attackBool, true);
+		attackStartTime = Time.time;
+
+		if (attackBool == "isAttacking1")
+		{
+			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));
+		}
+	}
+
+	private void EndAttack()
+	{
+		isAttackInitiated = false;
+		animator.SetBool("isAttacking1", false);
+		animator.SetBool("isAttacking2", false);  // reset both attack bools
+		moveAction.Enable();
+	}
+
+	// cooldown effect for attack 1
+	private IEnumerator AttackCooldown(Image cooldownOverlay, float duration)
+	{
+		Vector3 startScale = new Vector3(1, 1, 1); // full scale
+		Vector3 endScale = new Vector3(1, 0, 1); // zero y scale
+		float timePassed = 0f;
+
+		// Set the starting scale
+		cooldownOverlay.transform.localScale = startScale;
+
+		while (timePassed < duration)
+		{
+			timePassed += Time.deltaTime;
+			float scaleProgress = 1 - (timePassed / duration);
+			cooldownOverlay.transform.localScale = new Vector3(1, scaleProgress, 1); // Lerp the scale
+			yield return null;
+		}
+
+		// Set the scale to zero to ensure it's fully closed at the end of the cooldown
+		cooldownOverlay.transform.localScale = endScale;
+	}
+
+	// New coroutine for attack 2 cooldown
+	private IEnumerator Attack2Cooldown(float cooldownTime)
+	{
+		isAttack2OnCooldown = true;
+		attack2CooldownOverlay.gameObject.SetActive(true);
+		attack2CooldownOverlay.transform.localScale = new Vector3(1, 1, 1); // Full scale
+
+		float timePassed = 0f;
+		while (timePassed < cooldownTime)
+		{
+			timePassed += Time.deltaTime;
+			float scaleProgress = 1 - (timePassed / cooldownTime);
+			attack2CooldownOverlay.transform.localScale = new Vector3(1, scaleProgress, 1); // Lerp the scale
+			yield return null;
+		}
+
+		attack2CooldownOverlay.transform.localScale = new Vector3(1, 0, 1); // Set scale to zero
+		attack2CooldownOverlay.gameObject.SetActive(false);
+		isAttack2OnCooldown = false;
+	}
+
+	public void UpdatePlayerLevel()
+	{
+		playerLevel++;
 	}
 
 	private void OnEnable()
 	{
 		moveAction.Enable();
-		attackAction.Enable();
+		attackAction1.Enable();
+		attackAction2.Enable();
 	}
 
 	private void OnDisable()
 	{
 		moveAction.Disable();
-		attackAction.Disable();
+		attackAction1.Disable();
+		attackAction2.Disable();
 	}
 }
