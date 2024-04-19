@@ -80,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
 		// Initiate attack
 		if (attackAction.WasPressedThisFrame() && !isAttackInitiated)
 		{
+			moveAction.Disable();
 			isAttackInitiated = true;
 			animator.SetBool("isAttacking", true);
 			attackStartTime = Time.time;
@@ -90,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			isAttackInitiated = false;
 			animator.SetBool("isAttacking", false);
+			moveAction.Enable();
 		}
 	}
 
