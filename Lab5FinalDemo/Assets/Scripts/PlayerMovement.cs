@@ -7,6 +7,24 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
+	public static PlayerMovement Instance { get; private set; }
+
+	private void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			Destroy(this.gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
+		moveAction = inputActions.FindActionMap("Gameplay").FindAction("Move");
+		attackAction1 = inputActions.FindActionMap("Gameplay").FindAction("Attack1");
+		attackAction2 = inputActions.FindActionMap("Gameplay").FindAction("Attack2");
+	}
+
+
 	[Header("UI Elements")]
 	public Image attack1CooldownOverlay;
 	public Image attack2CooldownOverlay;
@@ -31,12 +49,6 @@ public class PlayerMovement : MonoBehaviour
 
 	public int playerLevel = 1;
 
-	private void Awake()
-	{
-		moveAction = inputActions.FindActionMap("Gameplay").FindAction("Move");
-		attackAction1 = inputActions.FindActionMap("Gameplay").FindAction("Attack1");
-		attackAction2 = inputActions.FindActionMap("Gameplay").FindAction("Attack2");
-	}
 
 	private void Start()
 	{
