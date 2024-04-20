@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 	public InputActionAsset inputActions;
 	private InputAction moveAction, attackAction1, attackAction2;
 
+	public WeaponDamage weaponDamage;
 	public Transform orientation;
 	private Animator animator;
 	Rigidbody rb;
@@ -127,6 +128,7 @@ public class PlayerMovement : MonoBehaviour
 		if (attackBool == "isAttacking1")
 		{
 			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));
+			weaponDamage.AllowDamage();
 		}
 	}
 
