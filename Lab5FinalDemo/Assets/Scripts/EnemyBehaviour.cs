@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-	//private PlayerController player;
 	private Animator animator;
 	public GameObject healthCanvas;
 	public Image healthUI;
@@ -13,6 +12,7 @@ public class EnemyBehaviour : MonoBehaviour
 	public int maxHealth;
 	private int currentHealth;
 	public float distanceToNoticePlayer = 15f;
+	public int xpGainOnKill;
 
 	private bool isDead = false;
 
@@ -21,30 +21,26 @@ public class EnemyBehaviour : MonoBehaviour
 		maxHealth = 50;
 		currentHealth = maxHealth;
 		animator = GetComponent<Animator>();
-		//player = FindObjectOfType<PlayerController>();
 	}
 
 	private void Update()
 	{
-		// Check the distance to the player and play animation if within range
-		float distanceToPlayer = Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position);
-		if (distanceToPlayer <= distanceToNoticePlayer && !isDead)
+		if (!isDead)
 		{
-			//animator.SetBool("isPlayerClose", true);
-
-			// Rotate towards the player
-			Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
-			// Ignore Y-axis differences to keep the rotation strictly horizontal
-			direction.y = 0;
-			if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+			// Check the distance to the player and play animation if within range
+			float distanceToPlayer = Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position);
+			if (distanceToPlayer <= distanceToNoticePlayer && !isDead)
 			{
-				Quaternion lookRotation = Quaternion.LookRotation(direction);
-				transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
+				// Rotate towards the player
+				Vector3 direction = (transform.position - PlayerMovement.Instance.transform.position).normalized;
+				// Ignore Y-axis differences to keep the rotation strictly horizontal
+				direction.y = 0;
+				if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+				{
+					Quaternion lookRotation = Quaternion.LookRotation(direction);
+					transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
+				}
 			}
-		}
-		else
-		{
-			//animator.SetBool("isPlayerClose", false);
 		}
 	}
 
@@ -63,7 +59,13 @@ public class EnemyBehaviour : MonoBehaviour
 	void Die()
 	{
 		isDead = true;
-		//animator.SetBool("isDead", true); // Death animation
+		animator.SetBool("isDead", true); // Death animation
 		healthCanvas.SetActive(false); // Disable health bar
+
+		// Gain player XP
+		if (PlayerExperience.Instance != null)
+		{
+			PlayerExperience.Instance.GainXP(xpGainOnKill);
+		}
 	}
 }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerExperience : MonoBehaviour
 {
+	public static PlayerExperience Instance { get; private set; }
+
 	public Image healthUI;
 	public Image attack2IconCover;
 	public Image attack3IconCover;
@@ -17,7 +19,17 @@ public class PlayerExperience : MonoBehaviour
 
 	PlayerMovement playerMovement;
 
-	
+	void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
+	}
 
 	// Start is called before the first frame update
 	void Start()
