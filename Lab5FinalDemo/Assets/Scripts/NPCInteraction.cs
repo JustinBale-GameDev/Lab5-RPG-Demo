@@ -12,7 +12,7 @@ public class NPCInteraction : MonoBehaviour
 
 	public GameObject interactionPanel;
 	public TMP_Text dialogTextComponent;
-	public NPCDialog npcDialog;
+	public NPCDialog npcDialog; // Custom class for managing NPC dialog and quest data
 
 	private bool isPlayerNear = false;
 	private bool isInteracting = false;
@@ -23,11 +23,13 @@ public class NPCInteraction : MonoBehaviour
 		npcDialog.questButton.SetActive(false);
 		interactAction = inputActions.FindActionMap("Gameplay").FindAction("Interact");
 	}
+
 	private void OnEnable()
 	{
 		interactAction.Enable();
 		EnemyBehaviour.OnEnemyKilled += UpdateQuestProgress;
 	}
+
 	private void OnDisable()
 	{
 		interactAction.Disable();
@@ -109,22 +111,25 @@ public class NPCInteraction : MonoBehaviour
 
 	private void CheckAndDisplayButtons()
 	{
-		if (npcDialog.isQuestGiver && !npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
+		if (npcDialog.isQuestGiver)
 		{
-			npcDialog.questButton.SetActive(true);
-			npcDialog.questButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			npcDialog.questButton.GetComponent<Button>().onClick.AddListener(StartQuest);
-		}
-		else
-		{
-			npcDialog.questButton.SetActive(false);
-		}
+			npcDialog.questButton.SetActive(!npcDialog.quest.isActive && !npcDialog.quest.isCompleted);
+			if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
+			{
+				npcDialog.questButton.GetComponent<Button>().onClick.RemoveAllListeners();
+				npcDialog.questButton.GetComponent<Button>().onClick.AddListener(() => npcDialog.quest.StartQuest(CloseInteractionPanel));
+			}
 
-		if (npcDialog.quest.isActive && npcDialog.quest.isCompleted)
-		{
-			npcDialog.quest.completeButton.SetActive(true);
-			npcDialog.quest.completeButton.GetComponent<Button>().onClick.RemoveAllListeners();
-			npcDialog.quest.completeButton.GetComponent<Button>().onClick.AddListener(() => CompleteQuest(npcDialog.quest));
+			if (npcDialog.quest.isActive && npcDialog.quest.isCompleted)
+			{
+				npcDialog.quest.completeButton.SetActive(true);
+				npcDialog.quest.completeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+				npcDialog.quest.completeButton.GetComponent<Button>().onClick.AddListener(() => npcDialog.quest.CompleteQuest(CloseInteractionPanel));
+			}
+			else
+			{
+				npcDialog.quest.completeButton.SetActive(false);
+			}
 		}
 	}
 
@@ -152,7 +157,7 @@ public class NPCInteraction : MonoBehaviour
 	{
 		if (quest.isActive && quest.isCompleted)
 		{
-			PlayerExperience.Instance.GainXP(500);
+			PlayerExperience.Instance.GainXP(quest.xpReward);
 			quest.isActive = false;
 			quest.isCompleted = true;
 			quest.questPanel.SetActive(false);
@@ -171,28 +176,29 @@ public class NPCDialog
 	public Quest quest;
 }
 
-[System.Serializable]
-public class Quest
-{
-	public string description;
-	public int requiredKills;
-	public int currentKills;
-	public bool isActive;
-	public bool isCompleted;
-	public GameObject questPanel;  // The UI panel to display quest progress
-	public TMP_Text questText;  // Text component to display quest status
-	public GameObject completeButton;  // Button to finish the quest
+//[System.Serializable]
+//public class Quest
+//{
+//	public string description;
+//	public int requiredKills;
+//	public int currentKills;
+//	public bool isActive;
+//	public bool isCompleted;
+//	public int xpReward;
+//	public GameObject questPanel;
+//	public TMP_Text questText;
+//	public GameObject completeButton;
 
-	public void UpdateQuestStatus()
-	{
-		if (isActive && !isCompleted)
-		{
-			questText.text = $"{currentKills} / {requiredKills} spiders killed";
-			if (currentKills >= requiredKills)
-			{
-				isCompleted = true;
-				completeButton.SetActive(true);  // Enable the button to complete the quest
-			}
-		}
-	}
-}
+//	public void UpdateQuestStatus()
+//	{
+//		if (isActive && !isCompleted)
+//		{
+//			questText.text = $"{currentKills} / {requiredKills} spiders killed";
+//			if (currentKills >= requiredKills)
+//			{
+//				isCompleted = true;
+//				completeButton.SetActive(true);  // Enable the button to complete the quest
+//			}
+//		}
+//	}
+//}
