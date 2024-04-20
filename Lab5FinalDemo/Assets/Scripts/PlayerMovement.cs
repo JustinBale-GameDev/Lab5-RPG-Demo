@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -120,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
 
 	private void InitiateAttack(string attackBool)
 	{
+		weaponDamage.AllowDamage();
 		moveAction.Disable();
 		isAttackInitiated = true;
 		animator.SetBool(attackBool, true);
@@ -128,7 +128,6 @@ public class PlayerMovement : MonoBehaviour
 		if (attackBool == "isAttacking1")
 		{
 			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));
-			weaponDamage.AllowDamage();
 		}
 	}
 

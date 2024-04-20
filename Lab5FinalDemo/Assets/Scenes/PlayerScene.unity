@@ -10468,7 +10468,7 @@ MonoBehaviour:
   playerObj: {fileID: 186765393}
   rb: {fileID: 186765392}
   thirdPersonCam: {fileID: 1778577217}
-  rotationSpeed: 7
+  rotationSpeed: 5
   inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
 --- !u!114 &1778577221
 MonoBehaviour:

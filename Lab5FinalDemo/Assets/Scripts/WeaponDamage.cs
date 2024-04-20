@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeaponDamage : MonoBehaviour
 {
 	public int damageAmount = 10;
-	private bool canDamage = true;
+	private bool canDamage = false;
 
 	private void OnTriggerEnter(Collider other)
 	{
