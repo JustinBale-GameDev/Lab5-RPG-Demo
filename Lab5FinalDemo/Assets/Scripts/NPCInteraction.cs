@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.UI;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class NPCInteraction : MonoBehaviour
 	private InputAction interactAction;
 
 	public GameObject interactionPanel;
-	public TMP_Text dialogTextComponent; // Assign this in the inspector
-	public NPCDialog npcDialog; // Assign dialog and quest details in the inspector
+	public TMP_Text dialogTextComponent;
+	public NPCDialog npcDialog;
 
 	private bool isPlayerNear = false;
 	private bool isInteracting = false;
@@ -21,6 +22,16 @@ public class NPCInteraction : MonoBehaviour
 		interactionPanel.SetActive(false);
 		npcDialog.questButton.SetActive(false);
 		interactAction = inputActions.FindActionMap("Gameplay").FindAction("Interact");
+	}
+	private void OnEnable()
+	{
+		interactAction.Enable();
+		EnemyBehaviour.OnEnemyKilled += UpdateQuestProgress;
+	}
+	private void OnDisable()
+	{
+		interactAction.Disable();
+		EnemyBehaviour.OnEnemyKilled -= UpdateQuestProgress;
 	}
 
 	private void Update()
@@ -54,38 +65,33 @@ public class NPCInteraction : MonoBehaviour
 			CloseInteractionPanel();
 		}
 	}
+
 	public void OpenInteractionPanel()
 	{
 		isInteracting = true;
 		interactionPanel.SetActive(true);
-		if (PlayerMovement.Instance != null && ThirdPersonCam.Instance != null)
-		{
-			Time.timeScale = 0;
-			Cursor.lockState = CursorLockMode.None;
-			Cursor.visible = true;
+		Time.timeScale = 0;
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 
-			//PlayerMovement.Instance.enabled = false;
-			//ThirdPersonCam.Instance.enabled = false;
-		}
 		if (npcDialog != null)
 		{
-			StartCoroutine(ShowText(npcDialog.dialogText, dialogTextComponent));
-			
+			string textToShow = npcDialog.dialogText;
+			if (npcDialog.quest.isCompleted)
+			{
+				textToShow = npcDialog.completedQuestDialog;  // Change the dialogue if the quest is completed
+			}
+			StartCoroutine(ShowText(textToShow, dialogTextComponent));
 		}
 	}
+
 	public void CloseInteractionPanel()
 	{
 		isInteracting = false;
 		interactionPanel.SetActive(false);
-		if (PlayerMovement.Instance != null && ThirdPersonCam.Instance != null)
-		{
-			Time.timeScale = 1;
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
-
-			//PlayerMovement.Instance.enabled = true;
-			//ThirdPersonCam.Instance.enabled = true;
-		}
+		Time.timeScale = 1;
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 	}
 
 	private IEnumerator ShowText(string text, TMP_Text textComponent)
@@ -95,35 +101,98 @@ public class NPCInteraction : MonoBehaviour
 		foreach (char c in text)
 		{
 			textComponent.text += c;
-			yield return new WaitForSecondsRealtime(0.02f);
+			yield return new WaitForSecondsRealtime(0.04f);
 		}
+		// Check and display buttons after text is shown
+		CheckAndDisplayButtons();
+	}
 
-		if (npcDialog.isQuestGiver)
+	private void CheckAndDisplayButtons()
+	{
+		if (npcDialog.isQuestGiver && !npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
 		{
-			npcDialog.questButton.SetActive(true); // Show quest button if NPC is a quest giver
+			npcDialog.questButton.SetActive(true);
+			npcDialog.questButton.GetComponent<Button>().onClick.RemoveAllListeners();
+			npcDialog.questButton.GetComponent<Button>().onClick.AddListener(StartQuest);
 		}
 		else
 		{
 			npcDialog.questButton.SetActive(false);
 		}
+
+		if (npcDialog.quest.isActive && npcDialog.quest.isCompleted)
+		{
+			npcDialog.quest.completeButton.SetActive(true);
+			npcDialog.quest.completeButton.GetComponent<Button>().onClick.RemoveAllListeners();
+			npcDialog.quest.completeButton.GetComponent<Button>().onClick.AddListener(() => CompleteQuest(npcDialog.quest));
+		}
 	}
 
-	private void OnEnable()
+	private void UpdateQuestProgress()
 	{
-		interactAction.Enable();
+		if (npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
+		{
+			npcDialog.quest.currentKills++;
+			npcDialog.quest.UpdateQuestStatus();
+		}
 	}
 
-	private void OnDisable()
+	public void StartQuest()
 	{
-		interactAction.Disable();
+		if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
+		{
+			npcDialog.quest.isActive = true;
+			npcDialog.quest.questPanel.SetActive(true);
+			npcDialog.quest.completeButton.SetActive(false);
+			CloseInteractionPanel();
+		}
+	}
+
+	public void CompleteQuest(Quest quest)
+	{
+		if (quest.isActive && quest.isCompleted)
+		{
+			PlayerExperience.Instance.GainXP(500);
+			quest.isActive = false;
+			quest.isCompleted = true;
+			quest.questPanel.SetActive(false);
+			CloseInteractionPanel();
+		}
 	}
 }
-
 
 [System.Serializable]
 public class NPCDialog
 {
 	public string dialogText;
+	public string completedQuestDialog;
 	public bool isQuestGiver;
-	public GameObject questButton; // This button can be enabled if the NPC is a quest giver
+	public GameObject questButton;
+	public Quest quest;
+}
+
+[System.Serializable]
+public class Quest
+{
+	public string description;
+	public int requiredKills;
+	public int currentKills;
+	public bool isActive;
+	public bool isCompleted;
+	public GameObject questPanel;  // The UI panel to display quest progress
+	public TMP_Text questText;  // Text component to display quest status
+	public GameObject completeButton;  // Button to finish the quest
+
+	public void UpdateQuestStatus()
+	{
+		if (isActive && !isCompleted)
+		{
+			questText.text = $"{currentKills} / {requiredKills} spiders killed";
+			if (currentKills >= requiredKills)
+			{
+				isCompleted = true;
+				completeButton.SetActive(true);  // Enable the button to complete the quest
+			}
+		}
+	}
 }

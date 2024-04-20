@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.UI;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+	public static event Action OnEnemyKilled;
 	private Animator animator;
 	public GameObject healthCanvas;
 	public Image healthUI;
@@ -63,9 +65,9 @@ public class EnemyBehaviour : MonoBehaviour
 		healthCanvas.SetActive(false); // Disable health bar
 
 		// Gain player XP
-		if (PlayerExperience.Instance != null)
-		{
-			PlayerExperience.Instance.GainXP(xpGainOnKill);
-		}
+		PlayerExperience.Instance.GainXP(xpGainOnKill);
+
+		// Notify that an enemy was killed
+		OnEnemyKilled?.Invoke();
 	}
 }
