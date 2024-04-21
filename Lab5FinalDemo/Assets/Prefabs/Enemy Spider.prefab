@@ -2748,7 +2748,7 @@ MonoBehaviour:
   distanceToNoticePlayer: 10
   xpGainOnKill: 125
   attackDistance: 3
-  attackCooldown: 5
+  attackCooldown: 3
   spiderDamage: {fileID: 9018801122803334777}
   deathSound: {fileID: 3728869872256084481}
 --- !u!136 &5416509917355361702
