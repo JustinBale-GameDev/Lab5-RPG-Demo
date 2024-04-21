@@ -45,6 +45,19 @@ public class NPCInteractionNoQuest : MonoBehaviour
 				CloseInteractionPanel();
 			}
 		}
+
+		if (isPlayerNear)
+		{
+			// Rotate towards the player
+			Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+			// Ignore Y-axis differences to keep the rotation strictly horizontal
+			direction.y = 0;
+			if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+			{
+				Quaternion lookRotation = Quaternion.LookRotation(direction);
+				transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
+			}
+		}
 	}
 
 	private void OnTriggerEnter(Collider other)
