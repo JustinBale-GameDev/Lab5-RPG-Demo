@@ -102,11 +102,11 @@ public class PlayerMovement : MonoBehaviour
 		{
 			if (attackAction1.WasPressedThisFrame())
 			{
-				InitiateAttack("isAttacking1");
+				InitiateAttack(false);  // false for normal attack
 			}
 			else if (playerLevel >= 2 && attackAction2.WasPressedThisFrame() && !isAttack2OnCooldown)
 			{
-				InitiateAttack("isAttacking2");
+				InitiateAttack(true);  // true for strong attack
 				StartCoroutine(Attack2Cooldown(5f)); // Start cooldown coroutine for attack 2
 			}
 		}
@@ -117,17 +117,21 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	private void InitiateAttack(string attackBool)
+	private void InitiateAttack(bool isStrongAttack)
 	{
-		weaponDamage.AllowDamage();
+		weaponDamage.AllowDamage(isStrongAttack);
 		moveAction.Disable();
 		isAttackInitiated = true;
-		animator.SetBool(attackBool, true);
+		animator.SetBool(isStrongAttack ? "isAttacking2" : "isAttacking1", true);
 		attackStartTime = Time.time;
 
-		if (attackBool == "isAttacking1")
+		if (isStrongAttack)
 		{
-			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));
+			StartCoroutine(AttackCooldown(attack2CooldownOverlay, 5f));  // Cooldown for strong attack
+		}
+		else
+		{
+			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));  // Cooldown for normal attack
 		}
 	}
 

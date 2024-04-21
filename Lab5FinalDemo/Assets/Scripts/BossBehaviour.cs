@@ -50,6 +50,7 @@ public class BossBehaviour : MonoBehaviour
 				// Attack if close enough and cooldown has passed
 				if (distanceToPlayer <= attackDistance && Time.time > lastAttackTime + attackCooldown)
 				{
+					bossWeaponDamage.AllowDamage();
 					StartCoroutine(PerformAttack());
 				}
 			}
@@ -60,7 +61,6 @@ public class BossBehaviour : MonoBehaviour
 	{
 		isAttacking = true;
 		lastAttackTime = Time.time;
-		bossWeaponDamage.AllowDamage();
 
 		if (attackCounter < 2)
 		{

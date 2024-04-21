@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour
 {
 	public Image healthUI;
 	public float maxHealth;
-	private float currentHealth;
+	[SerializeField] private float currentHealth;
 	public bool isDead;
 
 	// Start is called before the first frame update
@@ -19,6 +19,7 @@ public class PlayerHealth : MonoBehaviour
 
 	public void ApplyDamage(float damage)
 	{
+		Debug.Log("Damage applied");
 		currentHealth -= damage; // Subtract damage from current health
 		currentHealth = Mathf.Max(currentHealth, 0); // Current health does not drop below 0
 		float healthScale = Mathf.Clamp(1 - currentHealth / maxHealth, 0, 1); // Update the health UI scale based on the current health proportion to max health

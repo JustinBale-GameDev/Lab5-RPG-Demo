@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class WeaponDamage : MonoBehaviour
 {
-	public int damageAmount;
+	public int baseDamageAmount; // Default damage for normal attack
+	public int strongAttackDamageAmount; // Increased damage for strong attack
+	private int currentDamage;
 	private bool canDamage = false;
+
+	private void Awake()
+	{
+		currentDamage = baseDamageAmount;  // Initialize currentDamage with base damage
+	}
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -14,7 +21,7 @@ public class WeaponDamage : MonoBehaviour
 			EnemyBehaviour enemy = other.GetComponent<EnemyBehaviour>();
 			if (enemy != null)
 			{
-				enemy.ApplyDamage(damageAmount);
+				enemy.ApplyDamage(currentDamage);
 			}
 			canDamage = false; // Prevent multiple damage applications
 		}
@@ -24,7 +31,7 @@ public class WeaponDamage : MonoBehaviour
 			BossBehaviour boss = other.GetComponent<BossBehaviour>();
 			if (boss != null)
 			{
-				boss.ApplyDamage(damageAmount);
+				boss.ApplyDamage(currentDamage);
 				
 			}
 			canDamage = false; // Prevent multiple damage applications
@@ -32,8 +39,9 @@ public class WeaponDamage : MonoBehaviour
 	}
 
 	// Call when the attack animation starts
-	public void AllowDamage()
+	public void AllowDamage(bool isStrongAttack)
 	{
 		canDamage = true;
+		currentDamage = isStrongAttack ? strongAttackDamageAmount : baseDamageAmount;
 	}
 }

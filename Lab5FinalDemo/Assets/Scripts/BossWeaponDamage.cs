@@ -24,7 +24,14 @@ public class BossWeaponDamage : MonoBehaviour
 				playerHealth.ApplyDamage(damageAmount);
 			}
 			canDamage = false; // Prevent multiple damage applications
+			//StartCoroutine(ResetDamage());
 		}
+	}
+
+	IEnumerator ResetDamage()
+	{
+		yield return new WaitForSeconds(1.5f);
+		canDamage = false;
 	}
 
 	// Call when the attack animation starts

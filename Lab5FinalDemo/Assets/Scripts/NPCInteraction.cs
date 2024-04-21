@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 
 public class NPCInteraction : MonoBehaviour
 {
