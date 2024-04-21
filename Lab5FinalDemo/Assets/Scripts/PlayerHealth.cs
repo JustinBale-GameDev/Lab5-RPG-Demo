@@ -67,4 +67,9 @@ public class PlayerHealth : MonoBehaviour
 		float healthScale = Mathf.Clamp(1 - currentHealth / maxHealth, 0, 1); // Correctly reflect damage taken
 		healthUI.transform.localScale = new Vector3(healthScale, 1, 1);
 	}
+
+	public void GainHealth(int healthGain)
+	{
+		currentHealth += healthGain;
+	}
 }

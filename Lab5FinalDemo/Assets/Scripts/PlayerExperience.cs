@@ -19,6 +19,9 @@ public class PlayerExperience : MonoBehaviour
 
 	PlayerMovement playerMovement;
 
+	public AudioSource levelUpSound;
+	public ParticleSystem levelUpEffect;
+
 	void Awake()
 	{
 		if (Instance != null && Instance != this)
@@ -59,6 +62,15 @@ public class PlayerExperience : MonoBehaviour
 		playerLevel++; // Increase level
 		maxXP += 500; // Increase the maxXP for the next level
 		UpdateLevelUI(); // Update the level UI text
+
+		if (levelUpSound != null)
+		{
+			levelUpSound.Play();
+		}
+		if (levelUpEffect != null)
+		{
+			levelUpEffect.Play();
+		}
 
 		playerMovement.UpdatePlayerLevel(); // Update playerMovement script to allow for new attack
 
