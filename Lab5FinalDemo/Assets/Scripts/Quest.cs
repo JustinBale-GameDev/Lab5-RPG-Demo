@@ -7,6 +7,7 @@ using UnityEngine;
 public class Quest
 {
 	public string description;
+	public string enemyType;
 	public int requiredKills;
 	public int currentKills;
 	public bool isActive;

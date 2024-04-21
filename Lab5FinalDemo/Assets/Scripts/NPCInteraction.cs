@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.UI;
+using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 
 public class NPCInteraction : MonoBehaviour
 {
@@ -27,13 +28,25 @@ public class NPCInteraction : MonoBehaviour
 	private void OnEnable()
 	{
 		interactAction.Enable();
-		EnemyBehaviour.OnEnemyKilled += UpdateQuestProgress;
+		EnemyBehaviour.OnEnemyKilled += HandleEnemyKilled;
+		BossBehaviour.OnBossKilled += HandleBossKilled;
 	}
 
 	private void OnDisable()
 	{
 		interactAction.Disable();
-		EnemyBehaviour.OnEnemyKilled -= UpdateQuestProgress;
+		EnemyBehaviour.OnEnemyKilled -= HandleEnemyKilled;
+		BossBehaviour.OnBossKilled -= HandleBossKilled;
+	}
+
+	private void HandleEnemyKilled()
+	{
+		UpdateQuestProgress("spider");
+	}
+
+	private void HandleBossKilled()
+	{
+		UpdateQuestProgress("boss");
 	}
 
 	private void Update()
@@ -133,12 +146,15 @@ public class NPCInteraction : MonoBehaviour
 		}
 	}
 
-	private void UpdateQuestProgress()
+	private void UpdateQuestProgress(string enemyType)
 	{
 		if (npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
 		{
-			npcDialog.quest.currentKills++;
-			npcDialog.quest.UpdateQuestStatus();
+			if (npcDialog.quest.enemyType == enemyType)
+			{
+				npcDialog.quest.currentKills++;
+				npcDialog.quest.UpdateQuestStatus();
+			}
 		}
 	}
 
@@ -175,30 +191,3 @@ public class NPCDialog
 	public GameObject questButton;
 	public Quest quest;
 }
-
-//[System.Serializable]
-//public class Quest
-//{
-//	public string description;
-//	public int requiredKills;
-//	public int currentKills;
-//	public bool isActive;
-//	public bool isCompleted;
-//	public int xpReward;
-//	public GameObject questPanel;
-//	public TMP_Text questText;
-//	public GameObject completeButton;
-
-//	public void UpdateQuestStatus()
-//	{
-//		if (isActive && !isCompleted)
-//		{
-//			questText.text = $"{currentKills} / {requiredKills} spiders killed";
-//			if (currentKills >= requiredKills)
-//			{
-//				isCompleted = true;
-//				completeButton.SetActive(true);  // Enable the button to complete the quest
-//			}
-//		}
-//	}
-//}

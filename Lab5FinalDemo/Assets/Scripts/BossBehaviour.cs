@@ -11,16 +11,23 @@ public class BossBehaviour : MonoBehaviour
 	public GameObject healthCanvas;
 	public Image healthUI;
 
+	public int xpGainOnKill;
 	public int maxHealth;
 	private int currentHealth;
 	public float distanceToNoticePlayer = 15f;
-	public int xpGainOnKill;
+	public float attackDistance = 5f;
+	public float attackCooldown = 7f;
+	private float lastAttackTime = -7f;
+	[SerializeField] private int attackCounter = 0; // Counter to manage attack sequence
 
 	private bool isDead = false;
+	private bool isAttacking = false;
+
+	public BossWeaponDamage bossWeaponDamage;
+
 
 	void Start()
 	{
-		maxHealth = 50;
 		currentHealth = maxHealth;
 		animator = GetComponent<Animator>();
 	}
@@ -29,21 +36,53 @@ public class BossBehaviour : MonoBehaviour
 	{
 		if (!isDead)
 		{
-			// Check the distance to the player and play animation if within range
 			float distanceToPlayer = Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position);
-			if (distanceToPlayer <= distanceToNoticePlayer && !isDead)
+			if (distanceToPlayer <= distanceToNoticePlayer)
 			{
-				// Rotate towards the player
-				Vector3 direction = (transform.position - PlayerMovement.Instance.transform.position).normalized;
-				// Ignore Y-axis differences to keep the rotation strictly horizontal
+				Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
 				direction.y = 0;
-				if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+				if (direction != Vector3.zero)
 				{
 					Quaternion lookRotation = Quaternion.LookRotation(direction);
-					transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
+					transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+				}
+
+				// Attack if close enough and cooldown has passed
+				if (distanceToPlayer <= attackDistance && Time.time > lastAttackTime + attackCooldown)
+				{
+					StartCoroutine(PerformAttack());
 				}
 			}
 		}
+	}
+
+	private IEnumerator PerformAttack()
+	{
+		isAttacking = true;
+		lastAttackTime = Time.time;
+		bossWeaponDamage.AllowDamage();
+
+		if (attackCounter < 2)
+		{
+			animator.SetBool("attack1", true);
+			bossWeaponDamage.SetDamage(false); // Normal damage for attack1
+			attackCounter++;
+
+			yield return new WaitForSeconds(1);
+		}
+		else
+		{
+			animator.SetBool("attack2", true);
+			bossWeaponDamage.SetDamage(true); // Increased damage for attack2
+			attackCounter = 0; // Reset the counter after attack2
+
+			yield return new WaitForSeconds(2);
+		}
+
+		animator.SetBool("attack1", false);
+		animator.SetBool("attack2", false);
+
+		isAttacking = false;
 	}
 
 	public void ApplyDamage(int damage)
@@ -61,13 +100,9 @@ public class BossBehaviour : MonoBehaviour
 	void Die()
 	{
 		isDead = true;
-		animator.SetBool("isDead", true); // Death animation
-		healthCanvas.SetActive(false); // Disable health bar
-
-		// Gain player XP
+		animator.SetBool("death", true);
+		healthCanvas.SetActive(false);
 		PlayerExperience.Instance.GainXP(xpGainOnKill);
-
-		// Notify that an enemy was killed
 		OnBossKilled?.Invoke();
 	}
 }

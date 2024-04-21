@@ -20,7 +20,6 @@ public class EnemyBehaviour : MonoBehaviour
 
 	void Start()
 	{
-		maxHealth = 50;
 		currentHealth = maxHealth;
 		animator = GetComponent<Animator>();
 	}
@@ -63,11 +62,7 @@ public class EnemyBehaviour : MonoBehaviour
 		isDead = true;
 		animator.SetBool("isDead", true); // Death animation
 		healthCanvas.SetActive(false); // Disable health bar
-
-		// Gain player XP
-		PlayerExperience.Instance.GainXP(xpGainOnKill);
-
-		// Notify that an enemy was killed
-		OnEnemyKilled?.Invoke();
+		PlayerExperience.Instance.GainXP(xpGainOnKill); // Gain player XP
+		OnEnemyKilled?.Invoke(); // Notify spider quest an enemy was killed
 	}
 }
