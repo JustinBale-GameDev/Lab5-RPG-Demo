@@ -2,22 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossWeaponDamage : MonoBehaviour
+public class SpiderDamage : MonoBehaviour
 {
-	public int baseDamageAmount;
-	private int damageAmount;
+	public int damageAmount;
 	private bool canDamage = false;
 
-	private void Awake()
-	{
-		damageAmount = baseDamageAmount;
-	}
+	public AudioSource attacksound;
 
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Player") && canDamage)
 		{
 			Debug.Log("Player hit");
+			if (attacksound != null )
+			{
+				attacksound.Play();
+			}
 			PlayerHealth.Instance.ApplyDamage(damageAmount);
 			canDamage = false; // Prevent multiple damage applications
 		}
@@ -27,18 +27,5 @@ public class BossWeaponDamage : MonoBehaviour
 	public void AllowDamage()
 	{
 		canDamage = true;
-	}
-
-	// Method to set damage based on attack type
-	public void SetDamage(bool isStrongAttack)
-	{
-		if (isStrongAttack)
-		{
-			damageAmount = baseDamageAmount + 10; // Increase damage for strong attack
-		}
-		else
-		{
-			damageAmount = baseDamageAmount; // Normal damage
-		}
 	}
 }

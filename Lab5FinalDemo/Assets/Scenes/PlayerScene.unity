@@ -555,6 +555,7 @@ Transform:
   - {fileID: 358507517}
   - {fileID: 1158685478}
   - {fileID: 296482835}
+  - {fileID: 741091112}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -573,15 +574,16 @@ MonoBehaviour:
   attack1CooldownOverlay: {fileID: 972465314}
   attack2CooldownOverlay: {fileID: 228623546}
   moveSpeed: 6
-  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
-  weaponDamage: {fileID: 1488434341}
   orientation: {fileID: 1904943351}
+  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
+  walkingSound: {fileID: 296482836}
+  attackSound: {fileID: 741091113}
+  weaponDamage: {fileID: 1488434341}
   attackDuration: 1
   attack1Effect1: {fileID: 1265811019}
   attack1Effect2: {fileID: 358507518}
   attack1Effect3: {fileID: 1158685477}
   playerLevel: 1
-  walkingSound: {fileID: 296482836}
 --- !u!114 &186765395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -596,8 +598,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1567818070}
   maxHealth: 100
-  currentHealth: 0
   isDead: 0
+  regenRate: 0.25
 --- !u!95 &186765396
 Animator:
   serializedVersion: 4
@@ -1326,9 +1328,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -6239114150403175849, guid: b8aae51cd66a8d04d9bb30cc79c4effb, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 0609acde86b59a2458aaf135531f8756, type: 3}
+  m_audioClip: {fileID: 8300000, guid: d88e6bd959ff29740b3eed6ab266ea36, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2816,8 +2818,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1567818070}
   maxHealth: 100
-  currentHealth: 0
   isDead: 0
+  regenRate: 1
 --- !u!114 &464871003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2833,15 +2835,16 @@ MonoBehaviour:
   attack1CooldownOverlay: {fileID: 0}
   attack2CooldownOverlay: {fileID: 0}
   moveSpeed: 5
-  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
-  weaponDamage: {fileID: 0}
   orientation: {fileID: 1268339720}
+  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
+  walkingSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  weaponDamage: {fileID: 0}
   attackDuration: 1
   attack1Effect1: {fileID: 0}
   attack1Effect2: {fileID: 0}
   attack1Effect3: {fileID: 0}
   playerLevel: 1
-  walkingSound: {fileID: 0}
 --- !u!95 &464871004
 Animator:
   serializedVersion: 4
@@ -4202,6 +4205,134 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a0eedfe1b2e14d47b276e72159e85b1, type: 3}
+--- !u!1 &741091111
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 741091112}
+  - component: {fileID: 741091113}
+  m_Layer: 0
+  m_Name: Weapon Slash Sound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &741091112
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741091111}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 186765393}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &741091113
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741091111}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -6239114150403175849, guid: b8aae51cd66a8d04d9bb30cc79c4effb, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 0d91ecbf10106d647b0775f17f9b04f6, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.4
+  m_Pitch: 0.7
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &760446722
 GameObject:
   m_ObjectHideFlags: 0
@@ -5041,7 +5172,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796171926}
-  m_LocalRotation: {x: -0.023195684, y: 0.000000049020933, z: -0.000000010371842, w: 0.999731}
+  m_LocalRotation: {x: -0.023195684, y: 0.000000015353503, z: -0.0000000032484917, w: 0.999731}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5119,7 +5250,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 804594334}
-  m_LocalRotation: {x: 0.0000000074505797, y: 0.000000015274013, z: -0.0000000036037515, w: 1}
+  m_LocalRotation: {x: 0.0000000074505797, y: 0.000000048767156, z: -0.000000011506124, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7369,8 +7500,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1567818070}
   maxHealth: 100
-  currentHealth: 0
   isDead: 0
+  regenRate: 1
 --- !u!114 &1185999852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7386,15 +7517,16 @@ MonoBehaviour:
   attack1CooldownOverlay: {fileID: 0}
   attack2CooldownOverlay: {fileID: 0}
   moveSpeed: 5
-  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
-  weaponDamage: {fileID: 0}
   orientation: {fileID: 332727109}
+  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
+  walkingSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  weaponDamage: {fileID: 0}
   attackDuration: 1
   attack1Effect1: {fileID: 0}
   attack1Effect2: {fileID: 0}
   attack1Effect3: {fileID: 0}
   playerLevel: 1
-  walkingSound: {fileID: 0}
 --- !u!95 &1185999853
 Animator:
   serializedVersion: 4
@@ -8715,8 +8847,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1567818070}
   maxHealth: 100
-  currentHealth: 0
   isDead: 0
+  regenRate: 1
 --- !u!114 &1444940961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8732,15 +8864,16 @@ MonoBehaviour:
   attack1CooldownOverlay: {fileID: 0}
   attack2CooldownOverlay: {fileID: 0}
   moveSpeed: 5
-  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
-  weaponDamage: {fileID: 0}
   orientation: {fileID: 770005503}
+  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
+  walkingSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  weaponDamage: {fileID: 0}
   attackDuration: 1.25
   attack1Effect1: {fileID: 0}
   attack1Effect2: {fileID: 0}
   attack1Effect3: {fileID: 0}
   playerLevel: 1
-  walkingSound: {fileID: 0}
 --- !u!95 &1444940962
 Animator:
   serializedVersion: 4
@@ -10149,8 +10282,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1567818070}
   maxHealth: 100
-  currentHealth: 0
   isDead: 0
+  regenRate: 1
 --- !u!114 &1593318258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10166,15 +10299,16 @@ MonoBehaviour:
   attack1CooldownOverlay: {fileID: 0}
   attack2CooldownOverlay: {fileID: 0}
   moveSpeed: 5
-  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
-  weaponDamage: {fileID: 0}
   orientation: {fileID: 1566009246}
+  inputActions: {fileID: -944628639613478452, guid: 57e2c656e6389c947911230092282cda, type: 3}
+  walkingSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  weaponDamage: {fileID: 0}
   attackDuration: 1
   attack1Effect1: {fileID: 0}
   attack1Effect2: {fileID: 0}
   attack1Effect3: {fileID: 0}
   playerLevel: 1
-  walkingSound: {fileID: 0}
 --- !u!95 &1593318259
 Animator:
   serializedVersion: 4
@@ -11437,7 +11571,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869370950}
-  m_LocalRotation: {x: 0.11559233, y: -0.00000003418209, z: 0.000000003977852, w: 0.9932968}
+  m_LocalRotation: {x: 0.11559233, y: 0.000000034182086, z: -0.0000000039778514, w: 0.9932968}
   m_LocalPosition: {x: -1.66, y: 3, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

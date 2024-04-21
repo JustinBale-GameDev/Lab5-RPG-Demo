@@ -18,6 +18,13 @@ public class EnemyBehaviour : MonoBehaviour
 
 	private bool isDead = false;
 
+	public float attackDistance = 5f;
+	public float attackCooldown = 7f;
+	private float lastAttackTime = -7f;
+
+	public SpiderDamage spiderDamage;
+	public AudioSource deathSound;
+
 	void Start()
 	{
 		currentHealth = maxHealth;
@@ -36,13 +43,28 @@ public class EnemyBehaviour : MonoBehaviour
 				Vector3 direction = (transform.position - PlayerMovement.Instance.transform.position).normalized;
 				// Ignore Y-axis differences to keep the rotation strictly horizontal
 				direction.y = 0;
-				if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+				if (direction != Vector3.zero)
 				{
 					Quaternion lookRotation = Quaternion.LookRotation(direction);
 					transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
 				}
+
+				// Attack if close enough and cooldown has passed
+				if (distanceToPlayer <= attackDistance && Time.time > lastAttackTime + attackCooldown)
+				{
+					spiderDamage.AllowDamage();
+					StartCoroutine(PerformAttack());
+				}
 			}
 		}
+	}
+
+	private IEnumerator PerformAttack()
+	{
+		lastAttackTime = Time.time;
+		animator.SetBool("attack", true);
+		yield return new WaitForSeconds(1);
+		animator.SetBool("attack", false);
 	}
 
 	public void ApplyDamage(int damage)
@@ -62,6 +84,10 @@ public class EnemyBehaviour : MonoBehaviour
 		isDead = true;
 		animator.SetBool("isDead", true); // Death animation
 		healthCanvas.SetActive(false); // Disable health bar
+		if (deathSound != null) // play death sound
+		{
+			deathSound.Play();
+		}
 		PlayerExperience.Instance.GainXP(xpGainOnKill); // Gain player XP
 		OnEnemyKilled?.Invoke(); // Notify spider quest an enemy was killed
 	}

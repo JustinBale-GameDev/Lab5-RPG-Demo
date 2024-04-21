@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
 		attackAction2 = inputActions.FindActionMap("Gameplay").FindAction("Attack2");
 	}
 
-
 	[Header("UI Elements")]
 	public Image attack1CooldownOverlay;
 	public Image attack2CooldownOverlay;
@@ -32,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
 	public float moveSpeed;
 	Vector2 currentMovementInput;
 	Vector3 moveDirection;
+	public Transform orientation;
 
 	[Header("Input Actions")]
 	public InputActionAsset inputActions;
@@ -40,12 +40,10 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Sound")]
 	public AudioSource walkingSound;
 	private bool isWalking = false;
+	public AudioSource attackSound;
 
+	[Header("Attacking")]
 	public WeaponDamage weaponDamage;
-	public Transform orientation;
-	private Animator animator;
-	Rigidbody rb;
-
 	private bool isAttackInitiated = false;
 	private bool isAttack2OnCooldown = false;
 	public float attackDuration;
@@ -54,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
 	public ParticleSystem attack1Effect2;
 	public ParticleSystem attack1Effect3;
 
+	private Animator animator;
+	Rigidbody rb;
 	public int playerLevel = 1;
 
 
@@ -149,8 +149,11 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetBool(isStrongAttack ? "isAttacking2" : "isAttacking1", true);
 		attackStartTime = Time.time;
 
-		//attackEffect.Play();  // Play the particle effect when the attack is initiated
+		// Play the particle effect when the attack is initiated
 		StartCoroutine(AttackParticleDelay());
+
+		//Play attack sound
+		attackSound.Play();
 
 		if (isStrongAttack)
 		{
