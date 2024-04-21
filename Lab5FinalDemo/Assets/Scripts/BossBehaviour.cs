@@ -25,6 +25,10 @@ public class BossBehaviour : MonoBehaviour
 
 	public BossWeaponDamage bossWeaponDamage;
 
+	public AudioSource attack1Sound;
+	public AudioSource attack2Sound;
+	public AudioSource deathSound;
+
 
 	void Start()
 	{
@@ -64,6 +68,10 @@ public class BossBehaviour : MonoBehaviour
 
 		if (attackCounter < 2)
 		{
+			if (attack1Sound != null)
+			{
+				attack1Sound.Play();
+			}
 			animator.SetBool("attack1", true);
 			bossWeaponDamage.SetDamage(false); // Normal damage for attack1
 			attackCounter++;
@@ -72,6 +80,10 @@ public class BossBehaviour : MonoBehaviour
 		}
 		else
 		{
+			if (attack2Sound != null)
+			{
+				attack2Sound.Play();
+			}
 			animator.SetBool("attack2", true);
 			bossWeaponDamage.SetDamage(true); // Increased damage for attack2
 			attackCounter = 0; // Reset the counter after attack2
@@ -99,6 +111,10 @@ public class BossBehaviour : MonoBehaviour
 
 	void Die()
 	{
+		if (deathSound != null)
+		{
+			deathSound.Play();
+		}
 		isDead = true;
 		animator.SetBool("death", true);
 		healthCanvas.SetActive(false);
