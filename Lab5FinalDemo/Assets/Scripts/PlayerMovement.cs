@@ -37,6 +37,10 @@ public class PlayerMovement : MonoBehaviour
 	public InputActionAsset inputActions;
 	private InputAction moveAction, attackAction1, attackAction2;
 
+	[Header("Sound")]
+	public AudioSource walkingSound;
+	private bool isWalking = false;
+
 	public WeaponDamage weaponDamage;
 	public Transform orientation;
 	private Animator animator;
@@ -69,6 +73,9 @@ public class PlayerMovement : MonoBehaviour
 
 		animator.SetBool("isMoving", !isIdle);
 
+		// Handle walking sound
+		HandleWalkingSound(!isIdle);
+
 		HandleAttackInput();
 	}
 
@@ -96,6 +103,20 @@ public class PlayerMovement : MonoBehaviour
 		{
 			Vector3 limitedVel = flatVel.normalized * moveSpeed;
 			rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+		}
+	}
+
+	private void HandleWalkingSound(bool isCurrentlyWalking)
+	{
+		if (isCurrentlyWalking && !isWalking)
+		{
+			walkingSound.Play();
+			isWalking = true;
+		}
+		else if (!isCurrentlyWalking && isWalking)
+		{
+			walkingSound.Stop();
+			isWalking = false;
 		}
 	}
 

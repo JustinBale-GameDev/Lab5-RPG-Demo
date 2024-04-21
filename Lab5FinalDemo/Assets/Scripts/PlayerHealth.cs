@@ -5,6 +5,20 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
+	public static PlayerHealth Instance { get; private set; }
+
+	private void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			Destroy(this.gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
+	}
+
 	public Image healthUI;
 	public float maxHealth;
 	[SerializeField] private float currentHealth;

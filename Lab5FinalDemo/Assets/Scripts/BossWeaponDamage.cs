@@ -18,20 +18,15 @@ public class BossWeaponDamage : MonoBehaviour
 		if (other.CompareTag("Player") && canDamage)
 		{
 			Debug.Log("Player hit");
-			PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-			if (playerHealth != null)
-			{
-				playerHealth.ApplyDamage(damageAmount);
-			}
+			PlayerHealth.Instance.ApplyDamage(damageAmount);
+			//PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+			//if (playerHealth != null)
+			//{
+			//	playerHealth.ApplyDamage(damageAmount);
+			//}
 			canDamage = false; // Prevent multiple damage applications
 			//StartCoroutine(ResetDamage());
 		}
-	}
-
-	IEnumerator ResetDamage()
-	{
-		yield return new WaitForSeconds(1.5f);
-		canDamage = false;
 	}
 
 	// Call when the attack animation starts
