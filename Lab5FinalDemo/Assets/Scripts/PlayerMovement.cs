@@ -46,6 +46,9 @@ public class PlayerMovement : MonoBehaviour
 	private bool isAttack2OnCooldown = false;
 	public float attackDuration;
 	private float attackStartTime;
+	public ParticleSystem attack1Effect1;
+	public ParticleSystem attack1Effect2;
+	public ParticleSystem attack1Effect3;
 
 	public int playerLevel = 1;
 
@@ -125,6 +128,9 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetBool(isStrongAttack ? "isAttacking2" : "isAttacking1", true);
 		attackStartTime = Time.time;
 
+		//attackEffect.Play();  // Play the particle effect when the attack is initiated
+		StartCoroutine(AttackParticleDelay());
+
 		if (isStrongAttack)
 		{
 			StartCoroutine(AttackCooldown(attack2CooldownOverlay, 5f));  // Cooldown for strong attack
@@ -141,6 +147,14 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetBool("isAttacking1", false);
 		animator.SetBool("isAttacking2", false);  // reset both attack bools
 		moveAction.Enable();
+	}
+
+	private IEnumerator AttackParticleDelay()
+	{
+		yield return new WaitForSeconds(0.3f);
+		attack1Effect1.Play();
+		attack1Effect2.Play();
+		attack1Effect3.Play();
 	}
 
 	// cooldown effect for attack 1
