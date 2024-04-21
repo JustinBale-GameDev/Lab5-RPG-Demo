@@ -21,9 +21,12 @@ public class PlayerHealth : MonoBehaviour
 
 	public Image healthUI;
 	public float maxHealth;
-	private float currentHealth;
+	[SerializeField] private float currentHealth;
 	public bool isDead;
 	public float regenRate = 1f; // Health per second
+
+	public AudioSource healthSound;
+	public ParticleSystem healthParticles;
 
 	// Start is called before the first frame update
 	void Start()
@@ -43,8 +46,8 @@ public class PlayerHealth : MonoBehaviour
 
 	private void RegenerateHealth()
 	{
-		currentHealth += regenRate * Time.deltaTime; // Add regenRate health per second
-		currentHealth = Mathf.Min(currentHealth, maxHealth); // Ensure health does not exceed maxHealth
+		currentHealth += regenRate * Time.deltaTime; // health per second
+		currentHealth = Mathf.Min(currentHealth, maxHealth); // health does not exceed maxHealth
 		UpdateHealthUI();
 	}
 
@@ -64,12 +67,26 @@ public class PlayerHealth : MonoBehaviour
 
 	private void UpdateHealthUI()
 	{
-		float healthScale = Mathf.Clamp(1 - currentHealth / maxHealth, 0, 1); // Correctly reflect damage taken
+		float healthScale = Mathf.Clamp(1 - currentHealth / maxHealth, 0, 1);
 		healthUI.transform.localScale = new Vector3(healthScale, 1, 1);
 	}
 
-	public void GainHealth(int healthGain)
+	public void Heal(int healthGain)
 	{
 		currentHealth += healthGain;
+		currentHealth = Mathf.Min(currentHealth, maxHealth);
+		UpdateHealthUI();
+
+		//play sound
+		if (healthSound != null)
+		{
+			healthSound.Play();
+		}
+
+		//play effect
+		if (healthParticles != null)
+		{
+			healthParticles.Play();
+		}
 	}
 }
