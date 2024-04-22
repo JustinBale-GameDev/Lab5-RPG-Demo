@@ -17,7 +17,6 @@ public class BossWeaponDamage : MonoBehaviour
 	{
 		if (other.CompareTag("Player") && canDamage)
 		{
-			Debug.Log("Player hit");
 			PlayerHealth.Instance.ApplyDamage(damageAmount);
 			canDamage = false; // Prevent multiple damage applications
 		}

@@ -23,7 +23,7 @@ public class PlayerHealth : MonoBehaviour
 	public float maxHealth;
 	[SerializeField] private float currentHealth;
 	public bool isDead;
-	public float regenRate = 1f; // Health per second
+	public float regenRate; // Health per second
 
 	public AudioSource healthSound;
 	public ParticleSystem healthParticles;
@@ -53,7 +53,6 @@ public class PlayerHealth : MonoBehaviour
 
 	public void ApplyDamage(float damage)
 	{
-		Debug.Log("Damage applied");
 		currentHealth -= damage;
 		currentHealth = Mathf.Max(currentHealth, 0);
 		UpdateHealthUI();

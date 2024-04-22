@@ -16,6 +16,7 @@ public class Quest
 	public GameObject questPanel;
 	public TMP_Text questText;
 	public GameObject completeButton;
+	public EndGamePanelController endGamePanelController;
 
 	public void StartQuest(System.Action callback)
 	{
@@ -35,6 +36,12 @@ public class Quest
 			isCompleted = true;
 			questPanel.SetActive(false);
 			callback?.Invoke();
+
+			// Check if it's the boss quest
+			if (description == "Kill Ogre")
+			{
+				endGamePanelController.ActivatePanel();
+			}
 		}
 	}
 

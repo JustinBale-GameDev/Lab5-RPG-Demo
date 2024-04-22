@@ -13,7 +13,6 @@ public class SpiderDamage : MonoBehaviour
 	{
 		if (other.CompareTag("Player") && canDamage)
 		{
-			Debug.Log("Player hit");
 			if (attacksound != null )
 			{
 				attacksound.Play();

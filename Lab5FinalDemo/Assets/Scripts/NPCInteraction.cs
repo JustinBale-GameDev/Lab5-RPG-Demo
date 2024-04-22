@@ -12,7 +12,7 @@ public class NPCInteraction : MonoBehaviour
 
 	public GameObject interactionPanel;
 	public TMP_Text dialogTextComponent;
-	public NPCDialog npcDialog; // Custom class for managing NPC dialog and quest data
+	public NPCDialog npcDialog; // For managing NPC dialog and quest data
 
 	private bool isPlayerNear = false;
 	private bool isInteracting = false;
@@ -45,7 +45,7 @@ public class NPCInteraction : MonoBehaviour
 
 	private void HandleBossKilled()
 	{
-		UpdateQuestProgress("boss");
+		UpdateQuestProgress("ogre");
 	}
 
 	private void Update()
@@ -128,7 +128,7 @@ public class NPCInteraction : MonoBehaviour
 		foreach (char c in text)
 		{
 			textComponent.text += c;
-			yield return new WaitForSecondsRealtime(0.04f);
+			yield return new WaitForSecondsRealtime(0.03f);
 		}
 		// Check and display buttons after text is shown
 		CheckAndDisplayButtons();
@@ -141,13 +141,15 @@ public class NPCInteraction : MonoBehaviour
 			npcDialog.questButton.SetActive(!npcDialog.quest.isActive && !npcDialog.quest.isCompleted);
 			if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
 			{
+				npcDialog.questButton.SetActive(true); // Set Accept Quest button to active
 				npcDialog.questButton.GetComponent<Button>().onClick.RemoveAllListeners();
 				npcDialog.questButton.GetComponent<Button>().onClick.AddListener(() => npcDialog.quest.StartQuest(CloseInteractionPanel));
 			}
 
 			if (npcDialog.quest.isActive && npcDialog.quest.isCompleted)
 			{
-				npcDialog.quest.completeButton.SetActive(true);
+				npcDialog.questButton.SetActive(false); // Set Accept Quest button to disabled
+				npcDialog.quest.completeButton.SetActive(true); // Set Complete Quest button to active
 				npcDialog.quest.completeButton.GetComponent<Button>().onClick.RemoveAllListeners();
 				npcDialog.quest.completeButton.GetComponent<Button>().onClick.AddListener(() => npcDialog.quest.CompleteQuest(CloseInteractionPanel));
 			}
@@ -170,28 +172,28 @@ public class NPCInteraction : MonoBehaviour
 		}
 	}
 
-	public void StartQuest()
-	{
-		if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
-		{
-			npcDialog.quest.isActive = true;
-			npcDialog.quest.questPanel.SetActive(true);
-			npcDialog.quest.completeButton.SetActive(false);
-			CloseInteractionPanel();
-		}
-	}
+	//public void StartQuest()
+	//{
+	//	if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
+	//	{
+	//		npcDialog.quest.isActive = true;
+	//		npcDialog.quest.questPanel.SetActive(true);
+	//		npcDialog.quest.completeButton.SetActive(false);
+	//		CloseInteractionPanel();
+	//	}
+	//}
 
-	public void CompleteQuest(Quest quest)
-	{
-		if (quest.isActive && quest.isCompleted)
-		{
-			PlayerExperience.Instance.GainXP(quest.xpReward);
-			quest.isActive = false;
-			quest.isCompleted = true;
-			quest.questPanel.SetActive(false);
-			CloseInteractionPanel();
-		}
-	}
+	//public void CompleteQuest(Quest quest)
+	//{
+	//	if (quest.isActive && quest.isCompleted)
+	//	{
+	//		PlayerExperience.Instance.GainXP(quest.xpReward);
+	//		quest.isActive = false;
+	//		quest.isCompleted = true;
+	//		quest.questPanel.SetActive(false);
+	//		CloseInteractionPanel();
+	//	}
+	//}
 }
 
 [System.Serializable]
