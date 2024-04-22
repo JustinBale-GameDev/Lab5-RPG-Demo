@@ -9,18 +9,11 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-	[SerializeField]
-	private InputActionAsset inputActions;
+	public InputActionAsset inputActions;
 	private InputAction pauseAction;
-
-	[SerializeField]
-	PlayerMovement playerMovement;
-
-	[SerializeField]
-	GameObject pauseMenu;
-
-	[SerializeField] AudioMixer audioMixer;
-
+	public PlayerMovement playerMovement;
+	public GameObject pauseMenu;
+	public AudioMixer audioMixer;
 	bool isPaused = false;
 
 	private void Awake()
@@ -81,6 +74,20 @@ public class PauseMenu : MonoBehaviour
 			Cursor.visible = false;
 		}
 	}
+
+	//private void UpdateCursorLock()
+	//{
+	//	if (isPaused)
+	//	{
+	//		Cursor.lockState = CursorLockMode.None;
+	//		Cursor.visible = true;
+	//	}
+	//	else
+	//	{
+	//		Cursor.lockState = CursorLockMode.Locked;
+	//		Cursor.visible = false;
+	//	}
+	//}
 
 	public void RestartDemo()
 	{

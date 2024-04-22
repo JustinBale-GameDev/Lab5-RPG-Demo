@@ -51,7 +51,11 @@ public class PlayerMovement : MonoBehaviour
 	public ParticleSystem attack1Effect1;
 	public ParticleSystem attack1Effect2;
 	public ParticleSystem attack1Effect3;
+	public ParticleSystem attack2Effect1;
+	public ParticleSystem attack2Effect2;
+	public ParticleSystem attack2Effect3;
 
+	[Header("Other")]
 	public Animator animator;
 	Rigidbody rb;
 	public int playerLevel = 1;
@@ -150,17 +154,23 @@ public class PlayerMovement : MonoBehaviour
 		attackStartTime = Time.time;
 
 		// Play the particle effect when the attack is initiated
-		StartCoroutine(AttackParticleDelay());
+		//StartCoroutine(AttackParticleDelay());
 
 		//Play attack sound
 		attackSound.Play();
 
 		if (isStrongAttack)
 		{
+			attack2Effect1.Play();
+			attack2Effect2.Play();
+			attack2Effect3.Play();
 			StartCoroutine(AttackCooldown(attack2CooldownOverlay, 5f));  // Cooldown for strong attack
 		}
 		else
 		{
+			attack1Effect1.Play();
+			attack1Effect2.Play();
+			attack1Effect3.Play();
 			StartCoroutine(AttackCooldown(attack1CooldownOverlay, attackDuration));  // Cooldown for normal attack
 		}
 	}
@@ -173,13 +183,13 @@ public class PlayerMovement : MonoBehaviour
 		moveAction.Enable();
 	}
 
-	private IEnumerator AttackParticleDelay()
-	{
-		yield return new WaitForSeconds(0.3f);
-		attack1Effect1.Play();
-		attack1Effect2.Play();
-		attack1Effect3.Play();
-	}
+	//private IEnumerator AttackParticleDelay()
+	//{
+	//	yield return new WaitForSeconds(0.3f);
+	//	attack1Effect1.Play();
+	//	attack1Effect2.Play();
+	//	attack1Effect3.Play();
+	//}
 
 	// cooldown effect for attack 1
 	private IEnumerator AttackCooldown(Image cooldownOverlay, float duration)
