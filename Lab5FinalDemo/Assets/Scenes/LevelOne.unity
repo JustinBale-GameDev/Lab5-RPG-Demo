@@ -419,7 +419,8 @@ MonoBehaviour:
   interactionPanel: {fileID: 1571402430}
   dialogTextComponent: {fileID: 675546806}
   npcDialog:
-    dialogText: SPIDERS EVERYWHERE!!! SPIDERS EVERYWHERE!!!
+    dialogText: 'I can''t wander through the forest anymore with all these spiders
+      around.. '
 --- !u!135 &51906623
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7242,7 +7243,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 15.745789}
+  m_margin: {x: 0, y: 47.395447, z: 0, w: 15.745789}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12595,7 +12596,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 15.745789}
+  m_margin: {x: 0, y: 42.104126, z: 0, w: 15.745789}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -15537,7 +15538,7 @@ MonoBehaviour:
   npcDialog:
     dialogText: Hey you! I see ya got a sword there. What say you kill some of them
       spiders? I'll reward you!
-    completedQuestDialog: You did it!      That'll show em! Here is your reward.
+    completedQuestDialog: You did it! That'll show em! Here, take your reward.
     isQuestGiver: 1
     questButton: {fileID: 451633903}
     quest:
