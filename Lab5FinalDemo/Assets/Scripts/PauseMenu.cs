@@ -16,6 +16,8 @@ public class PauseMenu : MonoBehaviour
 	public AudioMixer audioMixer;
 	bool isPaused = false;
 
+	public GameObject controls;
+
 	private void Awake()
 	{
 		pauseAction = inputActions.FindActionMap("Gameplay").FindAction("PauseMenu");
@@ -52,6 +54,7 @@ public class PauseMenu : MonoBehaviour
 
 				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = false;
+				Close_Controls_Button();
 			}
 		}
 
@@ -72,6 +75,8 @@ public class PauseMenu : MonoBehaviour
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
+
+			Close_Controls_Button();
 		}
 	}
 
@@ -88,6 +93,15 @@ public class PauseMenu : MonoBehaviour
 	//		Cursor.visible = false;
 	//	}
 	//}
+
+	public void Controls_Button()
+	{
+		controls.SetActive(true);
+	}
+	public void Close_Controls_Button()
+	{
+		controls.SetActive(false);
+	}
 
 	public void RestartDemo()
 	{
