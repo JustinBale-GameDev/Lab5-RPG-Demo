@@ -6,7 +6,9 @@ public class BossWeaponDamage : MonoBehaviour
 {
 	public int baseDamageAmount;
 	private int damageAmount;
-	private bool canDamage = false;
+	[SerializeField] private bool canDamage = false;
+
+	public ParticleSystem weaponHitEffect;
 
 	private void Awake()
 	{
@@ -19,6 +21,12 @@ public class BossWeaponDamage : MonoBehaviour
 		{
 			PlayerHealth.Instance.ApplyDamage(damageAmount);
 			canDamage = false; // Prevent multiple damage applications
+
+			// Play hit effect
+			if (weaponHitEffect != null)
+			{
+				weaponHitEffect.Play();
+			}
 		}
 	}
 
@@ -26,6 +34,13 @@ public class BossWeaponDamage : MonoBehaviour
 	public void AllowDamage()
 	{
 		canDamage = true;
+		StartCoroutine(ResetCanDamage());
+	}
+
+	private IEnumerator ResetCanDamage()
+	{
+		yield return new WaitForSeconds(1.5f);
+		canDamage = false;
 	}
 
 	// Method to set damage based on attack type
