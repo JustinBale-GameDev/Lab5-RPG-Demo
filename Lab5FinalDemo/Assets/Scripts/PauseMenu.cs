@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class PauseMenu : MonoBehaviour
 
 	void Start()
 	{
+		Time.timeScale = 1;
 		isPaused = false;
 
 		Cursor.lockState = CursorLockMode.Locked;
@@ -78,6 +80,12 @@ public class PauseMenu : MonoBehaviour
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 		}
+	}
+
+	public void RestartDemo()
+	{
+		Time.timeScale = 1;
+		SceneManager.LoadScene("LevelOne");
 	}
 
 	public void Quit_Button()

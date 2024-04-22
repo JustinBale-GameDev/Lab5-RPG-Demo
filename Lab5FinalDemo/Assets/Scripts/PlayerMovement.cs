@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 	public ParticleSystem attack1Effect2;
 	public ParticleSystem attack1Effect3;
 
-	private Animator animator;
+	public Animator animator;
 	Rigidbody rb;
 	public int playerLevel = 1;
 
@@ -227,6 +227,13 @@ public class PlayerMovement : MonoBehaviour
 	public void UpdatePlayerLevel()
 	{
 		playerLevel++;
+	}
+
+	public void DisablePlayerControls()
+	{
+		moveAction.Disable();
+		attackAction1.Disable();
+		attackAction2.Disable();
 	}
 
 	private void OnEnable()

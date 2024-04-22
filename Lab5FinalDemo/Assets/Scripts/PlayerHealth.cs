@@ -28,9 +28,15 @@ public class PlayerHealth : MonoBehaviour
 	public AudioSource healthSound;
 	public ParticleSystem healthParticles;
 
+	public GameObject deathPanel;
+	public AudioSource deathSound;
+	public Animator animator;
+
 	// Start is called before the first frame update
 	void Start()
     {
+		deathPanel.SetActive(false);
+
 		currentHealth = maxHealth;
 		isDead = false;
 		UpdateHealthUI();
@@ -61,7 +67,33 @@ public class PlayerHealth : MonoBehaviour
 		if (currentHealth <= 0 && !isDead)
 		{
 			isDead = true;
+			StartCoroutine(Die());
 		}
+	}
+
+	private IEnumerator Die()
+	{
+		// Disable player movement immediately
+		PlayerMovement.Instance.DisablePlayerControls();
+
+		// Play death sound
+		deathSound.Play();
+
+		// Play death animation
+		animator.SetBool("isDead", true);
+
+		// Wait for the animation and sound to finish
+		yield return new WaitForSeconds(deathSound.clip.length);
+
+		// Enable death screen
+		deathPanel.SetActive(true);
+
+		// Stop game time
+		Time.timeScale = 0;
+
+		// Enable cursor
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 
 	private void UpdateHealthUI()
