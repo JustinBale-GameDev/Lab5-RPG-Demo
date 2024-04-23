@@ -59,6 +59,10 @@ public class BossBehaviour : MonoBehaviour
 				}
 			}
 		}
+		if (currentHealth <= 0 && !isDead)
+		{
+			Die();
+		}
 	}
 
 	private IEnumerator PerformAttack()
@@ -103,19 +107,23 @@ public class BossBehaviour : MonoBehaviour
 		currentHealth = Mathf.Max(currentHealth, 0); // Prevent negative health values
 		healthUI.transform.localScale = new Vector3((float)currentHealth / maxHealth, 1, 1);
 
-		if (currentHealth <= 0 && !isDead)
-		{
-			Die();
-		}
+		animator.SetBool("hit", true);
+		StartCoroutine(DelayHitAnimationBool());
+	}
+
+	private IEnumerator DelayHitAnimationBool()
+	{
+		yield return new WaitForSeconds(0.5f);
+		animator.SetBool("hit", false);
 	}
 
 	void Die()
 	{
+		isDead = true;
 		if (deathSound != null)
 		{
 			deathSound.Play();
 		}
-		isDead = true;
 		animator.SetBool("death", true);
 		healthCanvas.SetActive(false);
 		PlayerExperience.Instance.GainXP(xpGainOnKill);
