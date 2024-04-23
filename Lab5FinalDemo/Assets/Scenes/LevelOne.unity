@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 585bbd92fbbaf614bab0425172705625, type: 2}
 --- !u!4 &32990654 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4124210231638896489, guid: ab2920121c305d14dabef900b1dc2e20, type: 3}
@@ -2236,7 +2236,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -6239114150403175849, guid: b8aae51cd66a8d04d9bb30cc79c4effb, type: 2}
   m_audioClip: {fileID: 8300000, guid: d17cf4d3afda116449d85611100706a5, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2978,10 +2978,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 28.1
-  m_Height: 176.4
+  m_Radius: 28.100002
+  m_Height: 272.5177
   m_Direction: 1
-  m_Center: {x: 15.797411, y: -112.2, z: -14.1}
+  m_Center: {x: 15.797484, y: -64.1409, z: -14.100089}
 --- !u!4 &303212648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4882914989025602, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}
@@ -5605,6 +5605,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 95309135661054092, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a2995c2dfa5ee447bb99406df3fd57e, type: 3}
 --- !u!1 &628596512 stripped
@@ -5631,9 +5635,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthCanvas: {fileID: 286255220}
   healthUI: {fileID: 286255219}
+  agent: {fileID: 0}
   xpGainOnKill: 500
   maxHealth: 200
-  distanceToNoticePlayer: 20
+  noticeDistance: 17
   attackDistance: 5
   attackCooldown: 7
   attackCounter: 0
@@ -5650,6 +5655,42 @@ CapsuleCollider:
   m_GameObject: {fileID: 628596512}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 1.2
+  m_Height: 4
+  m_Direction: 1
+  m_Center: {x: 0, y: 2, z: 0}
+--- !u!195 &628596517
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628596512}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 2.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 180
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!136 &628596518
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628596512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1
   m_Height: 4

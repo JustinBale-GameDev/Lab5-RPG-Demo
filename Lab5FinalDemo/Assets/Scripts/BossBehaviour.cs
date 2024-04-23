@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class BossBehaviour : MonoBehaviour
@@ -10,15 +11,20 @@ public class BossBehaviour : MonoBehaviour
 	private Animator animator;
 	public GameObject healthCanvas;
 	public Image healthUI;
+	public NavMeshAgent agent;
 
 	public int xpGainOnKill;
 	public int maxHealth;
 	private int currentHealth;
-	public float distanceToNoticePlayer = 15f;
+	//public float distanceToNoticePlayer = 10f;
+	//public float followDistance = 25f;
+	public float noticeDistance;
 	public float attackDistance = 5f;
 	public float attackCooldown = 7f;
 	private float lastAttackTime = -7f;
 	[SerializeField] private int attackCounter = 0; // Counter to manage attack sequence
+
+	private Vector3 startPosition;
 
 	private bool isDead = false;
 	private bool isAttacking = false;
@@ -34,34 +40,73 @@ public class BossBehaviour : MonoBehaviour
 	{
 		currentHealth = maxHealth;
 		animator = GetComponent<Animator>();
+		startPosition = transform.position; // Store the initial position
+		agent = GetComponent<NavMeshAgent>();
 	}
 
 	private void Update()
 	{
 		if (!isDead)
 		{
-			float distanceToPlayer = Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position);
-			if (distanceToPlayer <= distanceToNoticePlayer)
-			{
-				Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
-				direction.y = 0;
-				if (direction != Vector3.zero)
-				{
-					Quaternion lookRotation = Quaternion.LookRotation(direction);
-					transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-				}
+			float distanceToPlayer = Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position);
+			float distanceFromStartToPlayer = Vector3.Distance(PlayerMovement.Instance.transform.position, startPosition);
 
-				// Attack if close enough and cooldown has passed
-				if (distanceToPlayer <= attackDistance && Time.time > lastAttackTime + attackCooldown)
-				{
-					bossWeaponDamage.AllowDamage();
-					StartCoroutine(PerformAttack());
-				}
+			// Behavior based on distance from the start position to the player
+			if (distanceFromStartToPlayer <= noticeDistance)
+			{
+				MoveTowardsPlayerToAttack(distanceToPlayer);
+			}
+			else
+			{
+				ReturnToStart();
 			}
 		}
+
 		if (currentHealth <= 0 && !isDead)
 		{
 			Die();
+		}
+	}
+
+	void MoveTowardsPlayerToAttack(float distanceToPlayer)
+	{
+		if (distanceToPlayer > attackDistance && !isAttacking)
+		{
+			agent.isStopped = false;
+			agent.SetDestination(PlayerMovement.Instance.transform.position);
+			animator.SetBool("isMoving", true);
+		}
+		else
+		{
+			agent.isStopped = true;
+			animator.SetBool("isMoving", false);
+
+			// Handle rotation towards the player
+			Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
+			Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+			transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 50f);
+
+			// Rotate towards the player just before attacking
+			if (Time.time > lastAttackTime + attackCooldown && !isAttacking)
+			{
+				bossWeaponDamage.AllowDamage();
+				StartCoroutine(PerformAttack());
+			}
+		}
+	}
+
+	void ReturnToStart()
+	{
+		if (Vector3.Distance(transform.position, startPosition) > 1f)
+		{
+			agent.isStopped = false;
+			agent.SetDestination(startPosition);
+			animator.SetBool("isMoving", true);
+		}
+		else
+		{
+			agent.isStopped = true;
+			animator.SetBool("isMoving", false);
 		}
 	}
 
@@ -69,6 +114,8 @@ public class BossBehaviour : MonoBehaviour
 	{
 		isAttacking = true;
 		lastAttackTime = Time.time;
+		agent.isStopped = true;
+		animator.SetBool("isMoving", false);
 
 		if (attackCounter < 2)
 		{
