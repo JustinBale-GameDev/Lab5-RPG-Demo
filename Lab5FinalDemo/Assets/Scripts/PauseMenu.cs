@@ -80,20 +80,6 @@ public class PauseMenu : MonoBehaviour
 		}
 	}
 
-	//private void UpdateCursorLock()
-	//{
-	//	if (isPaused)
-	//	{
-	//		Cursor.lockState = CursorLockMode.None;
-	//		Cursor.visible = true;
-	//	}
-	//	else
-	//	{
-	//		Cursor.lockState = CursorLockMode.Locked;
-	//		Cursor.visible = false;
-	//	}
-	//}
-
 	public void Controls_Button()
 	{
 		controls.SetActive(true);

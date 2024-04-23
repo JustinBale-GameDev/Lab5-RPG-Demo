@@ -153,9 +153,6 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetBool(isStrongAttack ? "isAttacking2" : "isAttacking1", true);
 		attackStartTime = Time.time;
 
-		// Play the particle effect when the attack is initiated
-		//StartCoroutine(AttackParticleDelay());
-
 		//Play attack sound
 		attackSound.Play();
 
@@ -183,14 +180,6 @@ public class PlayerMovement : MonoBehaviour
 		moveAction.Enable();
 	}
 
-	//private IEnumerator AttackParticleDelay()
-	//{
-	//	yield return new WaitForSeconds(0.3f);
-	//	attack1Effect1.Play();
-	//	attack1Effect2.Play();
-	//	attack1Effect3.Play();
-	//}
-
 	// cooldown effect for attack 1
 	private IEnumerator AttackCooldown(Image cooldownOverlay, float duration)
 	{
@@ -209,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
 			yield return null;
 		}
 
-		// Set the scale to zero to ensure it's fully closed at the end of the cooldown
+		// Set the scale to zero so it's fully closed at the end of the cooldown
 		cooldownOverlay.transform.localScale = endScale;
 	}
 

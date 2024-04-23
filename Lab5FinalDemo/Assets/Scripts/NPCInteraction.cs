@@ -68,7 +68,7 @@ public class NPCInteraction : MonoBehaviour
 			Vector3 direction = (PlayerMovement.Instance.transform.position - transform.position).normalized;
 			// Ignore Y-axis differences to keep the rotation strictly horizontal
 			direction.y = 0;
-			if (direction != Vector3.zero) // Check to avoid "Look rotation viewing vector is zero" error
+			if (direction != Vector3.zero)
 			{
 				Quaternion lookRotation = Quaternion.LookRotation(direction);
 				transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); // Smooth rotation
@@ -171,29 +171,6 @@ public class NPCInteraction : MonoBehaviour
 			}
 		}
 	}
-
-	//public void StartQuest()
-	//{
-	//	if (!npcDialog.quest.isActive && !npcDialog.quest.isCompleted)
-	//	{
-	//		npcDialog.quest.isActive = true;
-	//		npcDialog.quest.questPanel.SetActive(true);
-	//		npcDialog.quest.completeButton.SetActive(false);
-	//		CloseInteractionPanel();
-	//	}
-	//}
-
-	//public void CompleteQuest(Quest quest)
-	//{
-	//	if (quest.isActive && quest.isCompleted)
-	//	{
-	//		PlayerExperience.Instance.GainXP(quest.xpReward);
-	//		quest.isActive = false;
-	//		quest.isCompleted = true;
-	//		quest.questPanel.SetActive(false);
-	//		CloseInteractionPanel();
-	//	}
-	//}
 }
 
 [System.Serializable]

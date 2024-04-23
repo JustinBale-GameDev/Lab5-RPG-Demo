@@ -16,8 +16,6 @@ public class BossBehaviour : MonoBehaviour
 	public int xpGainOnKill;
 	public int maxHealth;
 	private int currentHealth;
-	//public float distanceToNoticePlayer = 10f;
-	//public float followDistance = 25f;
 	public float noticeDistance;
 	public float attackDistance = 5f;
 	public float attackCooldown = 7f;

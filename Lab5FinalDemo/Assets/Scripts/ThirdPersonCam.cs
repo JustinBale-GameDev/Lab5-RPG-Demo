@@ -49,43 +49,6 @@ public class ThirdPersonCam : MonoBehaviour
 		}
 	}
 
-
-	//private void Update()
-	//{
-	//	// Rotate orientation based on the player's position
-	//	Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-	//	orientation.forward = viewDir.normalized;
-
-	//	// Read movement input
-	//	Vector2 currentMovementInput = moveAction.ReadValue<Vector2>();
-	//	float horizontalInput = currentMovementInput.x;
-	//	float verticalInput = currentMovementInput.y;
-
-	//	Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-	//	if (inputDir != Vector3.zero)
-	//	{
-	//		playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
-	//	}
-	//}
-
-	//private void FixedUpdate()
-	//{
-	//	Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-	//	orientation.forward = viewDir.normalized;
-
-	//	Vector2 currentMovementInput = moveAction.ReadValue<Vector2>();
-	//	float horizontalInput = currentMovementInput.x;
-	//	float verticalInput = currentMovementInput.y;
-	//	Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-	//	if (inputDir != Vector3.zero)
-	//	{
-	//		playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
-	//	}
-	//}
-
-
 	private void OnEnable()
 	{
 		moveAction.Enable();
